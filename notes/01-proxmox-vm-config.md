@@ -26,6 +26,22 @@
 | Async IO | `io_uring` | Najnowszy, najwydajniejszy backend I/O na współczesnym jądrze hosta. |
 | Backup | zaznaczone | VM wchodzi do `vzdump` — siatka bezpieczeństwa przy eksperymentach z kernelem. |
 
+## CPU tab
+
+| Pole | Wartość | Dlaczego |
+|---|---|---|
+| Type | `host` | Przepuszcza dokładny model/flagi fizycznego CPU do gościa (zamiast generycznego `x86-64-v2-AES`, który celowo ukrywa większość instrukcji dla kompatybilności live-migration). Wymagane, żeby `-march=native` w `make.conf` miało sens. Koszt: brak live migration między różnymi CPU — nieistotne przy jednym serwerze. |
+| Sockets | 1 | Multi-socket/NUMA niepotrzebne przy jednym fizycznym CPU. |
+| Cores | 8 | Host ma 16 wątków fizycznie, obciążenie ~0.6% (praktycznie idle). 8 dla Gentoo = 50/50 split — solidna równoległość kompilacji (`MAKEOPTS -j8`/`-j9`), a hostowi + innym VM zostaje pełne 8 wątków zapasu. |
+| VCPUs | = Total cores (8) | Bez potrzeby hotplugu na start — prościej mieć równe Total cores. |
+| CPU limit | unlimited | Brak potrzeby twardego capu przy takim zapasie mocy. |
+| CPU units | 100 (domyślne) | Istotne dopiero przy konkurencji wielu VM o CPU — na razie nieistotne. |
+| Enable NUMA | wyłączone | Jeden socket fizyczny — niepotrzebne. |
+| CPU Affinity | All Cores | Pinowanie do konkretnych rdzeni hosta — zaawansowane, nieistotne teraz. |
+| Extra CPU Flags | Default | Mają sens głównie przy generycznych typach CPU; z `host` w większości nieistotne — physical CPU i tak przekazuje swoje flagi. |
+
+**Fizyczny host:** 16 wątków, obciążenie ~0.6% w momencie konfiguracji.
+
 ## Init system: systemd
 
 Wybrane zamiast OpenRC — spójne z resztą stacku (Fedora), bliżej "produkcyjnych" realiów.
