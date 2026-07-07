@@ -38,7 +38,7 @@
 | CPU units | 100 (domyślne) | Istotne dopiero przy konkurencji wielu VM o CPU — na razie nieistotne. |
 | Enable NUMA | wyłączone | Jeden socket fizyczny — niepotrzebne. |
 | CPU Affinity | All Cores | Pinowanie do konkretnych rdzeni hosta — zaawansowane, nieistotne teraz. |
-| Extra CPU Flags | Default | Mają sens głównie przy generycznych typach CPU; z `host` w większości nieistotne — physical CPU i tak przekazuje swoje flagi. |
+| Extra CPU Flags | Default | `pcid` (taniej z KPTI/Meltdown-fix), `pdpe1gb` (hugepages 1GB), `spec-ctrl`/`ssbd` (sprzętowa mitygacja Spectre v2/v4). Mają sens tylko przy generycznych typach CPU, żeby dosztukować pojedynczą łatkę bez pełnego ujawnienia CPU. Z `host` — bez znaczenia, fizyczny CPU i tak przekazuje te flagi jeśli je ma. |
 
 **Fizyczny host:** 16 wątków, obciążenie ~0.6% w momencie konfiguracji.
 
