@@ -48,6 +48,7 @@
 |---|---|---|
 | Memory | 12288 MiB (12 GiB) | Host ma 32 GB fizycznie, ale tylko ~18 GB *dostępne* (reszta już zajęta przez inne VM/usługi). 12 GB / 8 wątków kompilacji = ~1.5 GB/wątek, wystarcza na równoległy build bez swapowania w guest. Zostawia ~6 GB bufora z dostępnych 18 GB dla hosta. |
 | Ballooning | wyłączone (Minimum memory = 12288, równe Memory) | Kompilacja to skokowe zużycie RAM — balloon driver reaguje z opóźnieniem, ryzyko OOM w środku długiego builda. Fixed alokacja = przewidywalność kosztem elastyczności, akceptowalne przy dostępnym zapasie. |
+| Allow KSM | zaznaczone (domyślne) | Deduplikacja stron pamięci między VM na hoście, oszczędza RAM hosta. Bezpieczne u siebie (side-channel ryzyko dotyczy tylko multi-tenant chmur). Dla tej konkretnej VM niewielki zysk — dane kompilacji są unikalne/ulotne, nie pasują do stron innych VM — ale zero powodu, żeby wyłączać. |
 
 **Uwaga:** to jest fixed rezerwacja — 12 GB jest zajęte cały czas gdy VM działa, niezależnie od realnego użycia. Jeśli zabraknie podczas cięższych pakietów, można podbić (stop → edit → start) albo zmniejszyć `MAKEOPTS -j`.
 
