@@ -38,7 +38,9 @@ mount /dev/sda1 /mnt/gentoo/efi
 swapon /dev/sda2
 ```
 
-`compress=zstd` — kompresuje transparentnie źródła/pliki `.o` w `/var/tmp/portage`, oszczędza miejsce na 64 GB dysku. Kompresja/dekompresja zstd jest na tyle szybka, że praktycznie nie wpływa na czas kompilacji. Nie dotyczy ESP (`vfat` nie wspiera kompresji).
+`compress=zstd` — kompresuje transparentnie źródła/pliki `.o` w `/var/tmp/portage`, oszczędza miejsce na 64 GB dysku. Nie dotyczy ESP (`vfat` nie wspiera kompresji).
+
+**Dlaczego kompresja tu realnie przyspiesza, a nie tylko oszczędza miejsce:** btrfs sam z siebie płaci pewien koszt wydajności za swoje funkcje — copy-on-write, wolumeny logiczne, snapshoty. Ale kompresja zstd działa na tyle szybko, że **odwraca ten bilans**: mniej danych fizycznie trafia na dysk, więc mniej czasu schodzi na samo I/O — a to ono, nie CPU, jest zwykle wąskim gardłem przy zapisie. W efekcie kompresja nie jest tylko oszczędnością miejsca, tylko realnym przyspieszeniem względem tego samego btrfs bez kompresji.
 
 ### Subvolumes: **na razie brak** (pojedynczy top-level subvolume)
 
