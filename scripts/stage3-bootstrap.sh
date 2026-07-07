@@ -10,6 +10,8 @@ DISK="/dev/sda"              # docelowy dysk (VirtIO SCSI -> zwykle /dev/sda)
 MNT="/mnt/gentoo"
 ESP_SIZE="512MiB"
 SWAP_SIZE="2GiB"
+ROOT_LABEL="rootfs"
+BTRFS_MOUNT_OPTS="compress=zstd"
 STAGE3_VARIANT="stage3-amd64-systemd"
 MIRROR="https://distfiles.gentoo.org/releases/amd64/autobuilds"
 WORKDIR="/root/stage3"
@@ -40,14 +42,14 @@ format_partitions() {
     echo "==> Formatowanie partycji"
     mkfs.vfat -F32 "${p1}"
     mkswap "${p2}"
-    mkfs.ext4 -F "${p3}"
+    mkfs.btrfs -f -L "${ROOT_LABEL}" "${p3}"
 }
 
 mount_partitions() {
     local p1="${DISK}1" p2="${DISK}2" p3="${DISK}3"
     echo "==> Montowanie do ${MNT}"
     mkdir -p "${MNT}"
-    mount "${p3}" "${MNT}"
+    mount -o "${BTRFS_MOUNT_OPTS}" "${p3}" "${MNT}"
     mkdir -p "${MNT}/efi"
     mount "${p1}" "${MNT}/efi"
     swapon "${p2}"
@@ -113,6 +115,10 @@ print_next_steps() {
 
     # potem: emerge-webrsync, konfiguracja make.conf (CFLAGS -march=native,
     # MAKEOPTS wg liczby vCPU), wybór profilu, kernel, fstab, bootloader (GRUB UEFI).
+    #
+    # PAMIĘTAJ w kernelu: CONFIG_BTRFS_FS=y (na stałe, nie moduł -- root fs
+    # musi być czytelny zanim cokolwiek się zaladuje jako moduł).
+    # W fstab dla root: opcja mount "compress=zstd" (tak jak przy ręcznym montowaniu wyżej).
 
 EOF
 }
