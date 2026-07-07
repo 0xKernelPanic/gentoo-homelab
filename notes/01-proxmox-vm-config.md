@@ -52,6 +52,21 @@
 
 **Uwaga:** to jest fixed rezerwacja — 12 GB jest zajęte cały czas gdy VM działa, niezależnie od realnego użycia. Jeśli zabraknie podczas cięższych pakietów, można podbić (stop → edit → start) albo zmniejszyć `MAKEOPTS -j`.
 
+## Network tab
+
+| Pole | Wartość | Dlaczego |
+|---|---|---|
+| No network device | odznaczone | Sieć potrzebna do stage3, sync portage, docelowo distcc. |
+| Bridge | `vmbr0` | Standardowy bridge hosta. |
+| VLAN Tag | no VLAN | Homelab to jedna płaska sieć, brak segmentacji VLAN. |
+| Model | `VirtIO (paravirtualized)` | Najlepsza wydajność. Trzeci sterownik virtio do zapamiętania przy kernelu: `CONFIG_VIRTIO_NET` (obok `VIRTIO_BLK`/`SCSI`, `VIRTIO_PCI`) — bez niego karta sieciowa nie będzie widoczna po ręcznej konfiguracji jądra. |
+| MAC address | `auto` | Bez potrzeby stałego MAC/DHCP reservation na razie. |
+| Firewall | zaznaczone | Firewall Proxmoksa — sam checkbox nic nie blokuje, dopóki nie dodam reguł w Datacenter/VM → Firewall. `nftables` wewnątrz Gentoo to osobne, świadome ćwiczenie do zrobienia później. |
+| Disconnect | odznaczone | Zaznaczone symulowałoby wyjęty kabel. |
+| MTU | Same as bridge | Jumbo frames niepotrzebne w tej sieci. |
+| Rate limit | unlimited | Brak powodu do throttlowania. |
+| Multiqueue | **8** (= liczba vCPU) | Rozkłada obsługę ruchu sieciowego na wiele wątków. Bez znaczenia przy zwykłym pobieraniu stage3/portage, ale przyda się pod przyszły distcc cluster — zero kosztu ustawić teraz. |
+
 ## Init system: systemd
 
 Wybrane zamiast OpenRC — spójne z resztą stacku (Fedora), bliżej "produkcyjnych" realiów.
