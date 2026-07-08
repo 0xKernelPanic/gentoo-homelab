@@ -6,12 +6,13 @@ Cel: nauka Linuksa "od zera" (kernel, portage, USE flags) + materiał do CV.
 ## Status
 
 - [x] VM stworzona w Proxmoksie (System + Disks tab skonfigurowane)
-- [ ] ISO Gentoo minimal install podpięte
-- [ ] Partycjonowanie dysku
-- [ ] Stage3 rozpakowany
-- [ ] Chroot + base config (make.conf, portage sync)
-- [ ] Kernel (ręczna konfiguracja)
-- [ ] Bootloader (UEFI, bez Secure Boot)
+- [x] ISO Gentoo minimal install podpięte
+- [x] Partycjonowanie dysku (GPT + btrfs, subvolumes `@`/`@home`)
+- [x] Stage3 rozpakowany
+- [x] Chroot + base config (make.conf, profil, portage sync)
+- [x] Kernel (ręczna konfiguracja — `make defconfig` + `menuconfig`, skompilowany i zainstalowany)
+- [x] Bootloader (GRUB, UEFI, bez Secure Boot)
+- [ ] `/etc/fstab` (w trakcie — patrz `notes/07`)
 - [ ] Pierwszy boot do zainstalowanego systemu
 - [ ] Sieć, użytkownik, SSH
 - [ ] Qemu guest agent
