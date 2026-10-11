@@ -34,8 +34,16 @@ install_sudo() {
 }
 
 configure_sudoers() {
-    echo "==> Odkomentowanie %wheel w /etc/sudoers"
-    sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
+    # Osobny plik w /etc/sudoers.d zamiast edycji /etc/sudoers przez sed: błąd składni
+    # w sudoers blokuje sudo całkowicie, więc plik jest najpierw sprawdzany przez visudo,
+    # a dopiero potem instalowany z właściwymi uprawnieniami.
+    echo "==> Grupa wheel w /etc/sudoers.d/wheel"
+    local tmp
+    tmp="$(mktemp)"
+    echo "%wheel ALL=(ALL:ALL) ALL" > "${tmp}"
+    visudo -cf "${tmp}"
+    install -m 0440 -o root -g root "${tmp}" /etc/sudoers.d/wheel
+    rm -f "${tmp}"
 }
 
 create_user() {

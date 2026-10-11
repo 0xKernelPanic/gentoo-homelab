@@ -70,6 +70,10 @@ Odkomentować:
 %wheel ALL=(ALL:ALL) ALL
 ```
 
+`scripts/finalize-system.sh` robi to inaczej: zamiast edytować `/etc/sudoers` wkłada tę linię do
+osobnego pliku `/etc/sudoers.d/wheel`, sprawdzonego wcześniej przez `visudo -cf`. Błąd składni w
+`sudoers` blokuje `sudo` całkowicie, a przy zablokowanym roocie nie byłoby już jak go naprawić.
+
 ## Zwykły użytkownik
 
 ```bash
