@@ -15,7 +15,7 @@ zanim spisane do `scripts/stage3-bootstrap.sh`.
 
 ## Filesystem root: **btrfs** (nie ext4)
 
-Wybrane świadomie zamiast domyślnego ext4 (por. `AskUserQuestion` w rozmowie) — opcje rozważane: ext4, btrfs, XFS, ZFS.
+Wybrane świadomie zamiast domyślnego ext4 — opcje rozważane: ext4, btrfs, XFS, ZFS.
 
 **Dlaczego btrfs, nie ZFS:** ZFS wymaga modułu kernela spoza drzewa (out-of-tree, przez portage/dkms) — przy ręcznie budowanym kernelu na pierwszym incie Gentoo to istotnie podnosi ryzyko problemów z bootem. Btrfs jest mainline (w kernelu Linux), więc ten sam poziom ryzyka co ext4/XFS.
 
@@ -45,6 +45,8 @@ swapon /dev/sda2
 ### Subvolumes: **na razie brak** (pojedynczy top-level subvolume)
 
 Świadomie odłożone na później — podział na `@`/`@home`/`@var` (osobne snapshotowanie per katalog) to dobre rozszerzenie, ale nie na etapie pierwszego bootowania systemu. Zrobimy to jako kolejny krok, gdy system już wstanie.
+
+**Aktualizacja:** ostatecznie root i `/home` są na subvolumes `@` i `@home` (patrz `/etc/fstab` w `notes/08`), a `scripts/stage3-bootstrap.sh` tworzy je od razu przy instalacji.
 
 ## Do zapamiętania przy konfiguracji kernela
 
